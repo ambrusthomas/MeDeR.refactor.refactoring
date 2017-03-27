@@ -1,2 +1,2 @@
-/org.eclipse.emf.refactor.comrel/
-/org.eclipse.emf.refactor.comrel.diagram/
+**/bin/*
+*.class
