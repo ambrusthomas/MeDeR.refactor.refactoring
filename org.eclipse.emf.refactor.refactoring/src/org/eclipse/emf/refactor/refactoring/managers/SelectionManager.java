@@ -7,6 +7,7 @@ import java.util.List;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.papyrus.emf.facet.custom.metamodel.v0_2_0.internal.treeproxy.impl.EObjectTreeElementImpl;
 
 public class SelectionManager {
 
@@ -27,7 +28,11 @@ public class SelectionManager {
 			if (o instanceof org.eclipse.emf.ecore.EObject) {
 				r.add((EObject) o);
 			}
+			else if (o instanceof EObjectTreeElementImpl) {
+				r.add((EObject) ((EObjectTreeElementImpl)o).getEObject());
+			}
 		}
+		System.out.println(r.size());
 		return r;
 	}
 

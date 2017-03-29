@@ -15,6 +15,7 @@ import org.eclipse.emf.refactor.refactoring.core.Refactoring;
 import org.eclipse.emf.refactor.refactoring.managers.ProjectManager;
 import org.eclipse.emf.refactor.refactoring.papyrus.Activator;
 import org.eclipse.emf.refactor.refactoring.papyrus.managers.PapyrusSelectionManager;
+import org.eclipse.gmf.runtime.diagram.ui.editparts.IGraphicalEditPart;
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizardOpenOperation;
@@ -30,12 +31,14 @@ import org.eclipse.swt.widgets.Shell;
 public class PapyrusModelApplicationMenu extends ContributionItem {
 
 	private final List<EObject> selection;
+	private final List<IGraphicalEditPart> editParts;
 	private final String iconDir = "icons/";
 	private final String iconFile = "refactoring.png";
 	private Image image;
 
 	public PapyrusModelApplicationMenu() {
 		selection = PapyrusSelectionManager.getENotationSelection();
+		editParts = PapyrusSelectionManager.getEditParts();
 		try {
 			image = new Image(getDisplay(), getFullPath(iconDir + iconFile));
 		} catch (Exception e) {
@@ -47,6 +50,7 @@ public class PapyrusModelApplicationMenu extends ContributionItem {
 	public PapyrusModelApplicationMenu(String id) {
 		super(id);
 		selection = PapyrusSelectionManager.getENotationSelection();
+		editParts = PapyrusSelectionManager.getEditParts();
 		try {
 			image = new Image(getDisplay(), getFullPath(iconDir + iconFile));
 		} catch (Exception e) {
@@ -69,7 +73,8 @@ public class PapyrusModelApplicationMenu extends ContributionItem {
 					public void widgetSelected(SelectionEvent e) {
 						try {
 							//1. Set Selection:
-							r.getController().setSelection(selection);							
+							r.getController().setSelection(selection);
+							r.getController().setEditParts(editParts);
 							//2. Preselect Values:
 							r.getController().getDataManagementObject()
 													.preselect(selection);							

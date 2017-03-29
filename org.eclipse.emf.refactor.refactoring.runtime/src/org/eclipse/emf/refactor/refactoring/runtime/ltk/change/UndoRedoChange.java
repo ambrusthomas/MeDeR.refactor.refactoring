@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.edit.domain.EditingDomain;
+import org.eclipse.emf.refactor.refactoring.papyrus.handler.EmfRefactorNotificationHandler;
 import org.eclipse.emf.refactor.refactoring.runtime.ltk.command.RefactoringCommand;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
@@ -96,7 +97,12 @@ public class UndoRedoChange extends Change {
 	 */
 	@Override
 	public Change perform(IProgressMonitor pm) throws CoreException {
+		System.out.println("START");
+		
 		editingDomain.getCommandStack().execute(command);
+
+		System.out.println("END");
+		EmfRefactorNotificationHandler.getInstance().handleNotifications();
 		return new UndoRedoChange(command, editingDomain, name, root);
 	}
 

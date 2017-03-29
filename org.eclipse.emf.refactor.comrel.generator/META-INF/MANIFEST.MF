@@ -14,6 +14,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.emf.refactor.refactoring.generator;bundle-version="0.9.0",
  org.eclipse.emf.refactor.refactoring;bundle-version="0.9.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.ui.actions
 Export-Package: comrel.generator.helper

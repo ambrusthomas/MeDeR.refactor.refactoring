@@ -154,10 +154,10 @@ public class LtkEmfRefactoringProcessorAdapter
 				System.out.println("====> editingDomain 2: " + editingDomain);
 			}
 			if (null == editingDomain) {
-				ResourceSet rset = 
+				ResourceSet rset2 = 
 						selection.get(0).eResource().getResourceSet();
 				editingDomain = TransactionalEditingDomain.Factory.INSTANCE
-											.createEditingDomain(rset);
+											.createEditingDomain(rset2);
 				System.out.println("====> editingDomain 3: " + editingDomain);
 			}
 			return editingDomain;

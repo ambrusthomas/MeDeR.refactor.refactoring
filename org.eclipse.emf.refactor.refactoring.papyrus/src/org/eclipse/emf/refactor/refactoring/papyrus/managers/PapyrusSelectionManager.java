@@ -1,5 +1,6 @@
 package org.eclipse.emf.refactor.refactoring.papyrus.managers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
@@ -8,6 +9,7 @@ import org.eclipse.emf.refactor.refactoring.managers.SelectionManager;
 import org.eclipse.gmf.runtime.diagram.ui.editparts.IGraphicalEditPart;
 import org.eclipse.gmf.runtime.notation.Diagram;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.papyrus.infra.emf.utils.EMFHelper;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -15,6 +17,41 @@ import org.eclipse.ui.PlatformUI;
 
 //@SuppressWarnings("restriction")
 public class PapyrusSelectionManager extends SelectionManager {
+	
+	public static List<IGraphicalEditPart> getGraphicalEditParts() {
+		ISelection selection = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getSelectionService().getSelection();
+		
+		List<IGraphicalEditPart> graphicalEditParts = new ArrayList<>();
+		if (selection instanceof StructuredSelection) {
+			List<?> selectionList = ((StructuredSelection) selection).toList();
+			selectionList.stream().filter(e -> e instanceof IGraphicalEditPart)
+				.map(e -> {
+					return (IGraphicalEditPart) e;
+				}).forEach(e -> graphicalEditParts.add(e));
+		}
+		
+		return graphicalEditParts;
+	}
+	
+	public static List<IGraphicalEditPart> getEditParts() {
+		ISelection selection = 
+				PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+				.getSelectionService().getSelection();
+		
+		List<IGraphicalEditPart> editParts = new ArrayList<>();
+		
+		if (selection instanceof StructuredSelection) {
+			List strSelection = ((StructuredSelection) selection).toList();
+			for (Object o : strSelection) {
+				if (o instanceof IGraphicalEditPart) {
+					editParts.add((IGraphicalEditPart) o);
+				}
+			}
+		}
+		
+		return editParts;
+		
+	}
 	
 	public static List<EObject> getENotationSelection() {
 		ISelection selection = 
@@ -33,6 +70,8 @@ public class PapyrusSelectionManager extends SelectionManager {
 		    	r.add(gep.getNotationView().getElement());
 		    	PapyrusManager.getInstance().setDiagram((Diagram) root);
 		    	r.add(root);
+		    } else if (EMFHelper.getEObject(o) instanceof EObject) {
+		    	
 		    } else {
 		    	return null;
 		    }
@@ -63,6 +102,7 @@ public class PapyrusSelectionManager extends SelectionManager {
 		    		IGraphicalEditPart gep = (IGraphicalEditPart) o;
 		    		System.out.println("element: " + gep.resolveSemanticElement());
 		    		r.add(gep.resolveSemanticElement());
+		    		
 		    	} else {
 		    		EObject eObject = EMFHelper.getEObject(o);
 		    		if (eObject != null) {

@@ -7,8 +7,19 @@
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
-            allPopups="false"
-            locationURI="popup:org.eclipse.ui.popup.any">
+            allPopups="true"
+            locationURI="popup:org.eclipse.gmf.runtime.diagram.ui.DiagramEditorContextMenu?after=filtersMenu">
+         <menu
+               label="EMF Model Refactorings">
+            <dynamic
+                  class="org.eclipse.emf.refactor.refactoring.runtime.ui.ApplicationMenu"
+                  id="org.eclipse.emf.refactor.runtime.dynamicmenu">
+            </dynamic>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            allPopups="true"
+            locationURI="popup:org.eclipse.papyrus.views.modelexplorer.modelexplorer.popup?after=tools">
          <menu
                label="EMF Model Refactorings">
             <dynamic

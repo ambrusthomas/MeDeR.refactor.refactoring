@@ -14,6 +14,7 @@ import java.util.List;
 
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.refactor.refactoring.core.Refactoring;
+import org.eclipse.gmf.runtime.diagram.ui.editparts.IGraphicalEditPart;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringProcessor;
 
 /**
@@ -53,5 +54,9 @@ public interface IController {
 	 * @return Ltk RefactoringProcessor of the model refactoring.
 	 */
 	public RefactoringProcessor getLtkRefactoringProcessor();
+
+	default public void setEditParts(List<IGraphicalEditPart> editParts) {
+		
+	}
 
 }

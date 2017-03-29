@@ -16,7 +16,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.emf.refactor.refactoring.generator;bundle-version="0.7.0",
  org.eclipse.emf.refactor.refactoring.runtime;bundle-version="0.7.0"
 Bundle-ActivationPolicy: lazy
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Import-Package: org.eclipse.ui.actions
 Export-Package: org.eclipse.emf.refactor.refactoring.henshin.generator,
  org.eclipse.emf.refactor.refactoring.henshin.interfaces,

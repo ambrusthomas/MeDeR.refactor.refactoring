@@ -6,10 +6,7 @@
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="true"
-            locationURI="popup:org.eclipse.ui.popup.any?after=additions">
-         <menu
-               id="org.eclipse.emf.refactor.generator.menu"
-               label="EMF Quality Assurance (define new techniques)">
+            locationURI="popup:org.eclipse.emf.refactor.generator.menu">
             <command
                   commandId="org.eclipse.emf.refactor.refactoring.papyrus.generateNewRefactoringJavaCommand"
                   icon="icons/refactoring.png"
@@ -30,7 +27,6 @@
                   </iterate>
                </visibleWhen>
             </command>
-         </menu>
       </menuContribution>
    </extension>
    <extension
@@ -51,8 +47,8 @@
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
-            allPopups="false"
-            locationURI="popup:org.eclipse.ui.popup.any">
+            allPopups="true"
+            locationURI="popup:org.eclipse.gmf.runtime.diagram.ui.DiagramEditorContextMenu?after=filtersMenu">
          <menu
                icon="icons/refactoring.png"
                label="Papyrus UML Model Refactorings">
@@ -66,6 +62,35 @@
                         </instanceof>
                         <instanceof
                               value="org.eclipse.emf.facet.infra.browser.uicore.internal.model.ModelElementItem">
+                        </instanceof>
+                     </or>
+                  </iterate>
+               </visibleWhen>
+            <dynamic
+                  class="org.eclipse.emf.refactor.refactoring.papyrus.ui.PapyrusModelApplicationMenu"
+                  id="org.eclipse.emf.refactor.papyrus.dynamicmenu">
+            </dynamic>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            allPopups="true"
+            locationURI="popup:org.eclipse.papyrus.views.modelexplorer.modelexplorer.popup?after=tools">
+         <menu
+               icon="icons/refactoring.png"
+               label="Papyrus UML Model Refactorings">
+            <visibleWhen
+                     checkEnabled="true">
+                  <iterate
+                        ifEmpty="false">
+                     <or>
+                        <instanceof
+                              value="org.eclipse.gmf.runtime.diagram.ui.editparts.IGraphicalEditPart">
+                        </instanceof>
+                        <instanceof
+                              value="org.eclipse.emf.facet.infra.browser.uicore.internal.model.ModelElementItem">
+                        </instanceof>
+                        <instanceof
+                        	value="org.eclipse.papyrus.emf.facet.custom.metamodel.v0_2_0.internal.treeproxy.impl.EObjectTreeElementImpl">
                         </instanceof>
                      </or>
                   </iterate>

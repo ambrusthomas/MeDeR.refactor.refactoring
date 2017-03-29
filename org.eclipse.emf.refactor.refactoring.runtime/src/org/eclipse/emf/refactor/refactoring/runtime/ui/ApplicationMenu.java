@@ -18,16 +18,21 @@ import java.util.List;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.refactor.refactoring.configuration.managers.ConfigurationManager;
 import org.eclipse.emf.refactor.refactoring.core.Refactoring;
 import org.eclipse.emf.refactor.refactoring.managers.ProjectManager;
+import org.eclipse.emf.refactor.refactoring.papyrus.managers.PapyrusManager;
+import org.eclipse.emf.refactor.refactoring.papyrus.managers.PapyrusSelectionManager;
 import org.eclipse.emf.refactor.refactoring.runtime.config.RuntimeConfig;
-
+import org.eclipse.gmf.runtime.diagram.ui.editparts.IGraphicalEditPart;
+import org.eclipse.gmf.runtime.notation.Diagram;
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizardOpenOperation;
+import org.eclipse.papyrus.emf.facet.custom.metamodel.v0_2_0.internal.treeproxy.impl.EObjectTreeElementImpl;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -61,15 +66,23 @@ public class ApplicationMenu extends ContributionItem {
 	 */
 	private final List<EObject> selection;
 	
+	private final List<IGraphicalEditPart> editParts;
+	
 	/**
 	 * The menu is created each time when it is displayed
 	 */
 	public ApplicationMenu() {
 		ISelection orgSelection = 
 			PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-									.getSelectionService().getSelection(); 
+									.getSelectionService().getSelection();
 		System.out.println("===>>> orgSelection: " + orgSelection);
+		
+		if (!orgSelection.isEmpty() && ((StructuredSelection) orgSelection).getFirstElement() instanceof IGraphicalEditPart) {
+			PapyrusManager.getInstance().setDiagram((Diagram) EcoreUtil.getRootContainer(((IGraphicalEditPart) ((StructuredSelection) orgSelection).getFirstElement()).getNotationView()));
+		}
+		
 		selection = getESelection(orgSelection);
+		editParts = PapyrusSelectionManager.getEditParts();
 		System.out.println("===>>> selection: " + selection);
 	}
 
@@ -82,6 +95,7 @@ public class ApplicationMenu extends ContributionItem {
 			PlatformUI.getWorkbench().getActiveWorkbenchWindow()
 									.getSelectionService().getSelection(); 
 		selection = getESelection(orgSelection);
+		editParts = PapyrusSelectionManager.getEditParts();
 	}
 	
 	/**
@@ -144,11 +158,9 @@ public class ApplicationMenu extends ContributionItem {
 		if(config.isSupportGmfDiagramEditors() && 
 			RuntimeConfig.checkIsTypeOf(cl, GMF_EDITPART_IDENTIFIER, true)){
 			try {
-				if(null == ApplicationMenu.gmfMethod){
-					ApplicationMenu.gmfMethod = 
+				ApplicationMenu.gmfMethod = 
 						selectedEObject.getClass().getMethod
 									("resolveSemanticElement", new Class[0]);
-				}
 				list.add(ApplicationMenu.gmfMethod.invoke(selectedEObject));
 				return true;
 			} catch (Exception e) {
@@ -171,6 +183,9 @@ public class ApplicationMenu extends ContributionItem {
 		if(selectedEObject instanceof EObject){
 			list.add(selectedEObject);
 			return true;
+		} else if (selectedEObject instanceof EObjectTreeElementImpl) {
+			list.add(((EObjectTreeElementImpl) selectedEObject).getEObject());
+			return true;
 		}
 		return false;
 	}
@@ -186,33 +201,38 @@ public class ApplicationMenu extends ContributionItem {
 		LinkedList<Refactoring> refactorings = 
 				ConfigurationManager.getSelectedRefactorings(project);		
 		for(final Refactoring r : refactorings){
-			if(r.getGui().showInMenu(this.selection)){	
-				MenuItem menuItem = new MenuItem(menu, SWT.CHECK, menu.getItemCount());
-				menuItem.setText(r.getName());
-				menuItem.setEnabled(true);
-				menuItem.addSelectionListener(new SelectionAdapter() {
-					public void widgetSelected(SelectionEvent e) {
-						try {
-							//1. Set Selection:
-							r.getController().setSelection(selection);							
-							//2. Preselect Values:
-							r.getController().getDataManagementObject()
-													.preselect(selection);							
-							//3. Show Refactoring-Gui:
-							Shell shell = 
-									Display.getDefault().getActiveShell();
-							RefactoringWizardOpenOperation dialog = 
-								new RefactoringWizardOpenOperation
-														(r.getGui().show());
-							dialog.run(shell, "Refactoring: " + r.getName());
-							
-						} catch (Exception e2) {
-							MessageDialog
-								.openError(null, "Error", e2.getMessage());
+			try {
+				if(r.getGui().showInMenu(this.selection)){	
+					MenuItem menuItem = new MenuItem(menu, SWT.CHECK, menu.getItemCount());
+					menuItem.setText(r.getName());
+					menuItem.setEnabled(true);
+					menuItem.addSelectionListener(new SelectionAdapter() {
+						public void widgetSelected(SelectionEvent e) {
+							try {
+								//1. Set Selection:
+								r.getController().setSelection(selection);
+								r.getController().setEditParts(editParts);
+								//2. Preselect Values:
+								r.getController().getDataManagementObject()
+														.preselect(selection);							
+								//3. Show Refactoring-Gui:
+								Shell shell = 
+										Display.getDefault().getActiveShell();
+								RefactoringWizardOpenOperation dialog = 
+									new RefactoringWizardOpenOperation
+															(r.getGui().show());
+								dialog.run(shell, "Refactoring: " + r.getName());
+								
+							} catch (Exception e2) {
+								MessageDialog
+									.openError(null, "Error", e2.getMessage());
+							}
 						}
-					}
-				});
-			}			
+					});
+				}	
+			} catch (Exception e) {
+				
+			}
 		}	
 	}
 }

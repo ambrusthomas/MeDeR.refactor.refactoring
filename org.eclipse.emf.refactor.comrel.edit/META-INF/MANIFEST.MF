@@ -6,7 +6,7 @@ Bundle-Version: 0.9.0
 Bundle-ClassPath: .
 Bundle-Activator: comrel.provider.ComrelEditPlugin$Implementation
 Bundle-Localization: plugin
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Export-Package: comrel.provider
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf.refactor.comrel;visibility:=reexport,

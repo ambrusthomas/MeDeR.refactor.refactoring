@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.change.ChangeDescription;
 import org.eclipse.emf.ecore.util.EcoreUtil.Copier;
 import org.eclipse.emf.edit.domain.EditingDomain;
+import org.eclipse.emf.refactor.refactoring.papyrus.handler.EmfRefactorNotificationHandler;
 import org.eclipse.emf.refactor.refactoring.runtime.ltk.command.RefactoringCommand;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
@@ -119,7 +120,12 @@ public class RefactoringChange extends Change {
 	 */
 	@Override
 	public Change perform(IProgressMonitor pm) throws CoreException {
+//		EmfRefactorNotificationHandler.getInstance().incomingRefactors();
+		System.out.println("START");
+		
 		this.editingDomain.getCommandStack().execute(refactoringCommand);
+		System.out.println("END");
+		EmfRefactorNotificationHandler.getInstance().handleNotifications();
 		return 
 			new UndoRedoChange(refactoringCommand, editingDomain, name, root);	
 	}

@@ -4,8 +4,28 @@
    <extension
          point="org.eclipse.ui.menus">
       <menuContribution
-            allPopups="false"
-            locationURI="popup:org.eclipse.ui.popup.any">
+            allPopups="true"
+            locationURI="popup:org.eclipse.gmf.runtime.diagram.ui.DiagramEditorContextMenu?after=filtersMenu">
+         <menu
+               label="Xtext Refactorings provided by EMF Refactor">
+            <visibleWhen
+                  checkEnabled="true">
+               <iterate
+                     ifEmpty="false">
+                  <instanceof
+                        value="org.eclipse.jface.text.TextSelection">
+                  </instanceof>
+               </iterate>
+            </visibleWhen>
+            <dynamic
+                  class="org.eclipse.emf.refactor.refactoring.xtext.ui.XtextApplicationMenu"
+                  id="org.eclipse.emf.refactor.xtext.dynamicmenu">
+            </dynamic>
+         </menu>
+      </menuContribution>
+      <menuContribution
+            allPopups="true"
+            locationURI="popup:org.eclipse.papyrus.views.modelexplorer.modelexplorer.popup?after=tools">
          <menu
                label="Xtext Refactorings provided by EMF Refactor">
             <visibleWhen
